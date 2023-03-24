@@ -1,6 +1,6 @@
-function results = RENZO(model_mt,model_wt,msrd_protein_ids,Ptot_mt, Ptot_wt,...
-    protein_abundance_ratio,biomass_ratio,GAM,NCPU,bio_name)
-%% results = RENZO(model_mt,model_wt,msrd_protein_ids,Ptot_mt, Ptot_wt,protein_abundance_ratio,biomass_ratio,GAM,NCPU,bio_name)
+function results = RENZO(model_mt,model_wt,msrd_protein_ids,Ptot_mt,Ptot_wt,...
+    protein_abundance_ratio,biomass_ratio,GAM,NCPU,bio_name,f,ratio_tol)
+%% results = RENZO(model_mt,model_wt,msrd_protein_ids,Ptot_mt, Ptot_wt,protein_abundance_ratio,biomass_ratio,GAM,NCPU,bio_name,f,ratio_tol)
 % Impose protein abundance ratios on protein abundances in mutant and wild
 % type ecModel (GECKO).
 % Input:
@@ -14,7 +14,14 @@ function results = RENZO(model_mt,model_wt,msrd_protein_ids,Ptot_mt, Ptot_wt,...
 %   struct GAM:                             growth-associated maintenance
 %   double NCPU:                            (opt) number of workers to use
 %   char bio_name:                          (opt) name of biomass reaction in model
-% 
+%   double f:                               (opt) fraction of protein mass
+%                                           accounted for in the ecModel
+%                                           default: 0.5
+%   double ratio_tol:                       (opt) tolerance for the ratio
+%                                           between predicted and measured
+%                                           protein ratios
+%                                           default: 1e-5
+%
 % Output:
 %   struct results:                         results from flux variability
 %                                           analysis
@@ -22,7 +29,8 @@ function results = RENZO(model_mt,model_wt,msrd_protein_ids,Ptot_mt, Ptot_wt,...
 % Dr. Zahra Razaghi Moghadam, Philipp Wendering (University of Potsdam)
 
 % check input
-if nargin < 9
+
+if nargin < 9 || isempty(NCPU)
     NCPU = 1;
 elseif NCPU > 1
     p = gcp('nocreate');
@@ -37,6 +45,14 @@ if nargin < 10 || isempty(bio_name)
     bio_name = 'biomass';
 end
 bio_idx = find(contains(model_wt.rxnNames,bio_name));
+
+if nargin < 11 || isempty(f)
+    f = 0.5;
+end
+
+if narging < 12 || isempty(ratio_tol)
+    ratio_tol = 1e-5;
+end
 
 if isempty(bio_idx)
     error('Biomass reaction index for %s could not be determined.',bio_name)
@@ -66,8 +82,8 @@ end
 % update protein pool for wild type and mutant model
 orig_dir = pwd;
 cd(fileparts(which('constrainEnzymes')))
-model_mt = constrainEnzymes(model_mt,0.4421,GAM.mut,Ptot_mt/100);
-model_wt = constrainEnzymes(model_wt,0.4421,GAM.wt,Ptot_wt/100);
+model_mt = constrainEnzymes(model_mt,f,GAM.mut,Ptot_mt/100);
+model_wt = constrainEnzymes(model_wt,f,GAM.wt,Ptot_wt/100);
 cd(orig_dir)
 
 % construct LP
@@ -144,7 +160,7 @@ x_D = gurobi(m,params);
 % abundances for WT and mutant to the measured ratio
 for i = 1:num_added_variables
     Aineq(end+1,2*NRXNS + i) = 1;
-    bineq(end+1,1) = x_D.x(2*NRXNS + i) + 1e-5;
+    bineq(end+1,1) = x_D.x(2*NRXNS + i) + ratio_tol;
 end
 
 % update LP
