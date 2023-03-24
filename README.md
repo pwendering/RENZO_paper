@@ -19,7 +19,7 @@
 Run RENZO: 
 ```
 results = RENZO(model_mt, model_wt, msrd_protein_ids, Ptot_mt, Ptot_wt,...
-    protein_abundance_ratio, biomass_ratio, GAM, NCPU, bio_name)
+    protein_abundance_ratio, biomass_ratio, GAM, NCPU, bio_name, f, ratio_tol)
 ```
 
 
@@ -35,6 +35,8 @@ results = RENZO(model_mt, model_wt, msrd_protein_ids, Ptot_mt, Ptot_wt,...
 | GAM | struct | fields: mut, wt, contain growth-associated maintenance for mutant and wild type |
 | NCPU | double | number of workers for parallel pool (optional, default: 1) | 
 | bio\_name | char | name of biomass reaction in model (optional, default: biomass) |
+| f | double | fraction of protein mass that is accounted for in the ecModel (optional, default: 0.5) |
+| ratio_tol | double | tolerance for the ratio between predicted and measured protein ratios (optional, default: 1e-5) |
 
 
 *results* is a struct with fields
