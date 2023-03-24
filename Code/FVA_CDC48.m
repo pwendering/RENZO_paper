@@ -188,7 +188,7 @@ fprintf('\n\nLIGHT\n\n')
 GAM = struct('mut',GAM_mut_L,'wt',GAM_wt_L);
 result = RENZO(model_mut,model_wild,msrd_proteins_swissprot,...
     protein_ratio_m_L, protein_ratio_w_L,...
-    protein_abundance_ratio_L,biomass_ratio_L,GAM,NCPU);
+    protein_abundance_ratio_L,biomass_ratio_L,GAM,NCPU,0.4421);
 
 fprintf('infeasible min: %d\n',result.infeasible_min)
 fprintf('infeasible max: %d\n',result.infeasible_max)
@@ -215,7 +215,7 @@ fprintf('\n\nDARK\n\n')
 GAM = struct('mut',GAM_mut_D,'wt',GAM_wt_D);
 result = RENZO(model_mut,model_wild,msrd_proteins_swissprot,...
     protein_ratio_m_D, protein_ratio_w_D,...
-    protein_abundance_ratio_D,biomass_ratio_D,GAM,NCPU);
+    protein_abundance_ratio_D,biomass_ratio_D,GAM,NCPU,0.4421);
 
 fprintf('infeasible min: %d\n',result.infeasible_min)
 fprintf('infeasible max: %d\n',result.infeasible_max)
