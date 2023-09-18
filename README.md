@@ -1,6 +1,8 @@
 # **R**elative **ENZ**yme in **O**ptimization of metabolic models (RENZO)
 
 ## Publication
+F. Bezold, J. Scheffer, P. Wendering, Z. Razaghi-Moghadam, J. Trauth, B. Pook, H. Nußhär, S. Hasenjäger, Z. Nikoloski, L.-O. Essen, C. Taxis, Optogenetic control of Cdc48 for dynamic metabolic engineering in yeast. Metab. Eng. 79, 97–107 (2023).
+doi: [10.1016/j.ymben.2023.06.013](https://doi.org/10.1016/j.ymben.2023.06.013)
 
 ## Requirements
 - Matlab (tested with 2020a and b)
